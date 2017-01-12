@@ -9,6 +9,7 @@ class App extends Component {
 
     this.handleNewTodoInput = this.handleNewTodoInput.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
+    this.renderSelectedTodo = this.renderSelectedTodo.bind(this);
   }
 
   componentDidMount() {
@@ -70,7 +71,7 @@ class App extends Component {
 
       todoElements.push(
         <div className="todo d-flex justify-content-between pb-4" key={todoId}>
-          <div className="mt-2">
+          <div className="mt-2" onClick={() => this.selectTodo(todoId)}>
             <h4>{todo.title}</h4>
             <div>{moment(todo.createdAt).calendar()}</div>
           </div>
@@ -98,6 +99,22 @@ class App extends Component {
     })
   }
 
+  selectTodo(todoId) {
+    console.log(todoId);
+    this.setState({
+      currentTodo: todoId
+    })
+  }
+
+  renderSelectedTodo() {
+    if (this.state.currentTodo) {
+      let currentTodo = this.state.todos[this.state.currentTodo];
+      return (
+        <p>{currentTodo.title}</p>
+      )
+    }
+  }
+
   render() {
     return (
       <div className="App container-fluid">
@@ -105,6 +122,9 @@ class App extends Component {
           <div className="col-6 px-4">
             {this.renderNewTodoBox()}
             {this.renderTodoList()}
+          </div>
+          <div className="col-6 px-4">
+            {this.renderSelectedTodo()}
           </div>
         </div>
       </div>
