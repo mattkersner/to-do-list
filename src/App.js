@@ -107,12 +107,42 @@ class App extends Component {
   }
 
   renderSelectedTodo() {
+    if (this.state.edit) {
+      let currentTodo = this.state.todos[this.state.currentTodo];
+      return (
+        <div>
+          <button onClick={() => this.updateCurrentTodo(this.state.currentTodo, this.newText.value)}>Save</button>
+          <input
+            type="text"
+            defaultValue={currentTodo.title}
+            ref={(input) => this.newText = input}
+            />
+        </div>
+      )
+    };
     if (this.state.currentTodo) {
       let currentTodo = this.state.todos[this.state.currentTodo];
       return (
-        <p>{currentTodo.title}</p>
+        <div>
+          <button onClick={() => this.enableEditMode()}>Edit</button>
+          <p>{currentTodo.title}</p>
+        </div>
       )
-    }
+    };
+  }
+
+  enableEditMode() {
+    this.setState({ edit: true })
+  }
+
+  updateCurrentTodo(todoId, newText) {
+    axios.patch(`https://to-do-list-app-d3d22.firebaseio.com/todos/${todoId}.json`, {
+      title: newText,
+    })
+    .then((res) => {
+      this.getTodos();
+      this.setState({ edit: false })
+    })
   }
 
   render() {
